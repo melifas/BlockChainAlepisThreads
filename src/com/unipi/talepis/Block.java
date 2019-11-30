@@ -34,15 +34,20 @@ public class Block {
 
 
         synchronized (lock) {
-            Thread t1 = new Thread(new ThreadsMagic(data,previousHash,timeStamp,0,29,lock,1,buffer));
-            Thread t2 = new Thread(new ThreadsMagic(data,previousHash,timeStamp,30,60,lock,1,buffer));
+            Thread t1 = new Thread(new ThreadsMagic(data,previousHash,timeStamp,0x00000000,0x03FFFFFF,lock,prefix,buffer));
+            Thread t2 = new Thread(new ThreadsMagic(data,previousHash,timeStamp,0x40000000,0x7FFFFFFF,lock,prefix,buffer));
+            Thread t3 = new Thread(new ThreadsMagic(data,previousHash,timeStamp,0x80000000,0xBFFFFFFF,lock,prefix,buffer));
+            Thread t4 = new Thread(new ThreadsMagic(data,previousHash,timeStamp,0xC0000000,0xFFFFFFFF,lock,prefix,buffer));
+
 
             t1.start();
             t2.start();
+            t3.start();
+            t4.start();
 
             try {
                 //Περίμενε μέχρι να βρούν τα Threads το nonce και μόλις το βρούν συνεχίζουν απο το wait και θα πάρουν το nonce απο τον buffer
-                wait();
+                lock.wait();
                 nonce = buffer.get(0);
                 hash = calculateBlockHash();
                 return hash;
