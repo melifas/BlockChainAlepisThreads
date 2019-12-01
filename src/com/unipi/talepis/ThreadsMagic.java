@@ -33,20 +33,32 @@ public class ThreadsMagic implements  Runnable {
     @Override
     public void run() {
 
-        for (int i = start; i<=end ; i++) {
+        /*for (int nonce = start; nonce<=end ; nonce++) {
             Object lock = new Object();
             String prefixString = new String(new char[prefix]).replace('\0', '0');
             hash = calculateBlockHash();
 
             if (hash.substring(0, prefix).equals(prefixString)){
-                synchronized (lock) {
                     System.out.println("Hash found");
                     lock.notify();
                     buffer.add(nonce);
-                    break;
+                }else{
+                nonce++;
+            }
+        }*/
+
+        for (int nonce = start; nonce<=end;nonce++){
+            Object lock = new Object();
+            String prefixString = new String(new char[prefix]).replace('\0', '0');
+            hash = calculateBlockHash();
+            synchronized (lock) {
+                if (hash.substring(0, prefix).equals(prefixString)) {
+                    System.out.println("Hash found");
+                    lock.notify();
+                    buffer.add(nonce);
                 }
             }
-            nonce++;
+                break;
         }
     }
 
