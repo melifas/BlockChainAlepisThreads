@@ -47,18 +47,31 @@ public class ThreadsMagic implements  Runnable {
             }
         }*/
 
-        for (int nonce = start; nonce<=end;nonce++){
-            Object lock = new Object();
+       /* for (int nonce = start; nonce<=end;nonce++){
             String prefixString = new String(new char[prefix]).replace('\0', '0');
             hash = calculateBlockHash();
-            synchronized (lock) {
+
                 if (hash.substring(0, prefix).equals(prefixString)) {
-                    System.out.println("Hash found");
-                    lock.notify();
+                    synchronized (lock) {
+                        System.out.println("Hash found");
+                        lock.notify();
+                        buffer.add(nonce);
+                    }
+                }
+        }*/
+
+        for (int j = start; j < end; j++) {
+            String prefixString = new String(new char[prefix]).replace('\0', '0');
+            hash = calculateBlockHash();
+            if (hash.substring(0, prefix).equals(prefixString)) {  // hash found, return hash
+                synchronized (lock) {
+                    System.out.println("Hash found: " + hash);
+                    lock.notify(); // wakeup Block.mineBlock
                     buffer.add(nonce);
+                    return;
                 }
             }
-                break;
+            nonce++;
         }
     }
 

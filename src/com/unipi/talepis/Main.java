@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Main {
     public static List<Block> blockchain = new ArrayList<Block>();
-    public static int prefix = 1;
+    public static int prefix = 4;
 
     public static void main(String[] args) {
 
